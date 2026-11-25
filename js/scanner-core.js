@@ -237,6 +237,10 @@ export function flattenLighting(cv, canvas) {
  * bands without a lead mark are continuation lines of the entry above.
  */
 export function splitEntries(cv, canvas) {
+  if (canvas.height < 1000) { // thresholds are tuned for phone-photo resolution; upscale small inputs
+    const k = 1000 / canvas.height, up = document.createElement('canvas'); up.width = Math.round(canvas.width * k); up.height = 1000;
+    const g = up.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(canvas, 0, 0, up.width, up.height); canvas = up;
+  }
   const src = cv.imread(canvas); const gray = new cv.Mat(); cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
   const ink = new cv.Mat(); cv.adaptiveThreshold(gray, ink, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV, 31, 18);
   cv.morphologyEx(ink, ink, cv.MORPH_OPEN, cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(2, 2)));
@@ -265,12 +269,13 @@ export function splitEntries(cv, canvas) {
     const bh = b.y1 - b.y0;
     b.x0 = first + mX; b.blob = first >= 0 && (end - first) < bh * 1.2 && (gapEnd - end) > bh * 0.3; b.textX = b.blob ? gapEnd + mX : b.x0;
   }
-  const textXs = merged.map(b => b.textX).sort((a, b) => a - b); const bodyX = textXs[textXs.length >> 1] || 0;
+  const textXs = merged.map(b => b.textX).sort((a, b) => a - b); const bodyX = textXs[Math.floor((textXs.length - 1) * 0.25)] || 0; // text column (lean left)
   for (const b of merged) { const bh = b.y1 - b.y0; b.lead = b.blob && b.x0 < bodyX - bh * 0.3; }
   // group into entries: a new entry starts at a lead mark OR after a clearly bigger blank gap than between lines
   const gaps = merged.slice(1).map((b, i) => b.y0 - merged[i].y1).sort((a, b) => a - b);
   const typGap = gaps.length ? gaps[Math.floor(gaps.length * 0.3)] : 0;
-  const bigGap = Math.max(h * 0.035, typGap * 2.5 + 4);
+  const bandHs = merged.map(b => b.y1 - b.y0).sort((a, b) => a - b); const medBand = bandHs[bandHs.length >> 1] || 0;
+  const bigGap = Math.max(h * 0.035, typGap * 2.5 + 4, medBand * 0.9); // resolution-independent: compare with line height
   const entries = [];
   for (const b of merged) {
     const last = entries[entries.length - 1];
