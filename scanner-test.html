@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>Scanner self-test</title>
+<style>body{font:14px system-ui;margin:12px;background:#222;color:#eee}.r{display:inline-block;margin:6px;vertical-align:top}canvas{max-width:380px;display:block}</style>
+<h2>Chad's Pad scanner self-test (synthetic photos)</h2><div id="out"></div>
+<script src="https://docs.opencv.org/4.10.0/opencv.js"></script>
+<script type="module">
+import { cvReady, detectQuad, warp, flattenLighting } from './js/scanner-core.js';
+import { SAMPLE_IMAGES, SAMPLE_TRUTH } from './js/samples.js';
+const cv = await cvReady();
+const truth = SAMPLE_TRUTH;
+const results = {};
+function iouPoly(a, b, W, H) { // raster IoU
+  const c = document.createElement('canvas'); c.width = W / 4; c.height = H / 4; const g = c.getContext('2d');
+  const fill = (q, col) => { g.beginPath(); q.forEach((p, i) => i ? g.lineTo(p[0] / 4, p[1] / 4) : g.moveTo(p[0] / 4, p[1] / 4)); g.closePath(); g.fillStyle = col; g.fill(); };
+  g.globalCompositeOperation = 'lighter'; fill(a, '#ff0000'); fill(b, '#00ff00');
+  const d = g.getImageData(0, 0, c.width, c.height).data; let i = 0, u = 0;
+  for (let k = 0; k < d.length; k += 4) { const r = d[k] > 128, gg = d[k + 1] > 128; if (r && gg) i++; if (r || gg) u++; } return i / u;
+}
+for (const name of Object.keys(truth)) {
+  const img = new Image(); img.src = SAMPLE_IMAGES[name]; await img.decode();
+  const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight; c.getContext('2d').drawImage(img, 0, 0);
+  const src = cv.imread(c); const t0 = performance.now(); const r = detectQuad(cv, src, { debug: true }); const ms = performance.now() - t0; src.delete();
+  const g = c.getContext('2d');
+  g.lineWidth = 8; g.strokeStyle = 'rgba(255,255,0,.8)'; g.setLineDash([20, 14]); g.beginPath(); truth[name].forEach((p, i) => i ? g.lineTo(...p) : g.moveTo(...p)); g.closePath(); g.stroke(); g.setLineDash([]);
+  let iou = 0;
+  if (r.quad) { g.strokeStyle = '#22ff55'; g.lineWidth = 10; g.beginPath(); r.quad.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.stroke(); iou = iouPoly(truth[name], r.quad.map(p => [p.x, p.y]), c.width, c.height); }
+  results[name] = { found: !!r.quad, iouVsTruth: +iou.toFixed(3), method: r.method, inferredCorner: r.inferred, shadowHint: r.shadow, score: r.score, ms: Math.round(ms), otsu: r.otsu };
+  const box = document.createElement('div'); box.className = 'r';
+  box.innerHTML = `<b>${name}</b><br>${r.quad ? '✅ found' : '❌ no quad'} · IoU vs truth ${iou.toFixed(3)} · ${r.method || ''}${r.inferred ? ' (corner inferred)' : ''} · shadow hint: ${r.shadow} · ${Math.round(ms)}ms`;
+  box.appendChild(c);
+  const m = document.createElement('canvas'); m.width = r.debugMask.width; m.height = r.debugMask.height; m.getContext('2d').putImageData(r.debugMask, 0, 0); m.style.width = '190px'; box.appendChild(m);
+  if (r.quad) { const f = flattenLighting(cv, warp(cv, c, r.quad, 600)); f.style.width = '190px'; box.appendChild(f); }
+  document.getElementById('out').appendChild(box);
+}
+window.__results = results; document.title = 'done';
+</script>
