@@ -1,0 +1,1 @@
+{ "name": "Chad's Pad (Prototype)", "short_name": "Chad's Pad", "start_url": "./", "display": "standalone", "background_color": "#eef0f3", "theme_color": "#ffffff", "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }] }

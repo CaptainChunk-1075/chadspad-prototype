@@ -1,0 +1,52 @@
+/* ===== THEME LAYER =====
+   Every colour, font, texture, radius and shadow the UI uses is a token here.
+   Logic never hard-codes a look. A theme = one [data-theme] block that overrides tokens
+   (+ optional decorative assets). Register it in js/themes.js. */
+:root, [data-theme="default"] {
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-note: "Caveat", "Bradley Hand", cursive;   /* handwritten note text */
+  --font-print: "Newsreader", Georgia, serif;
+  --font-digits: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --bg: #eef0f3;  --bg-texture: none;
+  --surface: #ffffff; --surface-2: #f6f7f9; --surface-sunk: #e6e8ec;
+  --ink: #1d232b; --ink-muted: #5b6573; --ink-faint: #8f98a5; --ink-on-accent: #fff;
+  --rule: #d9dde3; --focus: #2f6fed;
+  --accent: #2f6fed; --accent-soft: #e3ecff;
+  --prio-high: #d64545; --prio-high-soft: #fde8e8;
+  --prio-medium: #d98a12; --prio-medium-soft: #fff1d9;
+  --prio-low: #3a8f5c; --prio-low-soft: #e2f4e9;
+  --waiting: #6c5ccf; --waiting-soft: #ece9fb;
+  --done: #3a8f5c;
+  --nudge: #e0592a;
+  --card-bg: #ffffff; --card-texture: none; --card-border: #e2e5ea; --card-shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+  --card-radius: 10px; --radius: 10px; --radius-sm: 6px; --radius-btn: 8px;
+  --btn-bg: #ffffff; --btn-fg: var(--ink); --btn-border: #cfd4db; --btn-shadow: none;
+  --panel-bg: #ffffff; --panel-shadow: -8px 0 30px rgba(16,24,40,.12);
+  --overlay: rgba(15,20,30,.45);
+  --fresh-glow: 0 0 0 3px #7cc4ff, 0 0 18px #7cc4ff;
+  --phone-digits-size: 46px;
+  /* pen + highlighter palette kept from the live app */
+  --pen-navy: #1c2a6b; --pen-blue: #1f5fd1; --pen-black: #1d1d1f; --pen-red: #c0262f; --pen-green: #1e7a3c;
+  --mark-yellow: #fff27a; --mark-pink: #ffb3d1; --mark-orange: #ffc78a; --mark-lime: #c9f58f;
+}
+
+/* ---- Walt's Desk (PREVIEW ONLY: proves tokens swap; real art/texture assets come later) ---- */
+[data-theme="walts-desk"] {
+  --font-ui: "Newsreader", Georgia, serif;
+  --font-note: "Caveat", cursive;
+  --bg: #5b3a22;
+  --bg-texture: repeating-linear-gradient(92deg, rgba(0,0,0,.06) 0 3px, transparent 3px 11px), linear-gradient(#6b4529, #4f321d);
+  --surface: #fbf1a9; --surface-2: #f6e98e; --surface-sunk: #e9d97a;
+  --ink: #23211c; --ink-muted: #5a5240; --ink-faint: #8a7f62; --rule: #c9b866;
+  --accent: #8a2b1f; --accent-soft: #f2d9a0;
+  --prio-high: #a3261b; --prio-medium: #b8741a; --prio-low: #4e6b2a;
+  --prio-high-soft: #f3cf8e; --prio-medium-soft: #f6e08f; --prio-low-soft: #e3e39a;
+  --waiting: #4b4f8a; --waiting-soft: #e8df9a;
+  --card-bg: #fdf3a6;
+  --card-texture: repeating-linear-gradient(transparent 0 23px, rgba(70,110,180,.35) 23px 24px), linear-gradient(90deg, transparent 0 26px, rgba(200,40,40,.45) 26px 27px, transparent 27px);
+  --card-border: #d9c463; --card-shadow: 1px 2px 0 rgba(0,0,0,.18), 0 6px 14px rgba(0,0,0,.25);
+  --card-radius: 2px; --radius: 4px; --radius-btn: 999px;
+  --btn-bg: radial-gradient(circle at 35% 30%, #5a5a55, #2b2a27 70%); --btn-fg: #efe6c9; --btn-border: #171613;
+  --btn-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 2px 0 #0d0c0a;
+  --panel-bg: #fbf1a9;
+}

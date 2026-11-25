@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chad's Pad">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Chad's Pad · Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body data-view="desk">
+<header class="topbar">
+  <div class="brand">Chad's Pad <span class="proto" title="Design prototype: demo data only">PROTOTYPE</span></div>
+  <div class="counters" id="counters"></div>
+  <input type="search" class="search" id="search" placeholder="Search notes, names, numbers…  ( / )" autocomplete="off">
+  <div class="spacer desk-only"></div>
+  <span class="sync desk-only" id="sync"><i></i><span>Saved</span></span>
+  <button class="btn desk-only" id="btn-archive" title="Searchable archive">Archive</button>
+  <button class="btn desk-only" id="btn-morning" title="Morning start screen">☀ Morning</button>
+  <select id="theme" class="btn desk-only" style="width:auto" aria-label="Theme"></select>
+  <button class="btn" id="btn-settings" title="Settings">⚙</button>
+  <button class="btn desk-only" id="btn-view" title="Switch to phone layout">📱</button>
+  <button class="btn primary desk-only" id="btn-new">+ New note</button>
+</header>
+<main id="desk" class="desk-only"></main>
+<main id="phone" class="phone-only"></main>
+<button class="btn primary fab phone-only" id="fab" aria-label="New note">+</button>
+<div class="newmenu hidden" id="newmenu"></div>
+<aside class="panel" id="detail" aria-label="Note details"></aside>
+<div id="layer"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
